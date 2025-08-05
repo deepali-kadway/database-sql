@@ -89,6 +89,6 @@ update students
 set `password` = "NewPass123"
 where id in (1, 2);
 
-
 -- delete students data
 delete from students where id=1;
+
