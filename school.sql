@@ -185,10 +185,39 @@ foreign key (newCourse_id) references newCourses(id) on delete cascade on update
 insert into newCourses_students (student_id, newCourse_id)
 values (2, 1), (3, 2), (2,3), (3,4), (1,5), (3, 1), (2, 2);
 
--- Find all new courses taken by a particular student
+-- Find all new courses taken by a particular student. This is an example of INNER JOIN or SIMPLY JOIN.
 select s.id, s.fullname, s.email, nc.name as `course` from students s
 join newCourses_students ncs on s.id = ncs.student_id
 join newCourses nc on ncs.newCourse_id = nc.id
 where s.id = 2;
 
+-- insert data into courses
+insert into newCourses (name)
+values("Phychology"), ("Physics"), ("Psychology");
 
+INSERT into students (fullname, email, password)
+VALUES ("Tom", "tom@gmail.com", "Tom123"),
+("Brandt", "brandt@gmail.com", "Brandt123");
+
+-- INNER JOIN or JOIN. It will return a shared record set of both tables.
+select * from students s
+inner join newCourses_students ncs on s.id = ncs.student_id
+join newCourses nc on ncs.newCourse_id = nc.id;
+
+-- LEFT join
+-- show all students even if they are not enrolled in any courses
+select * from students s
+left join newCourses_students ncs on s.id = ncs.student_id
+left join newCourses nc on ncs.newCourse_id = nc.id;
+
+-- right join
+-- show all courses, even if no student is enrolled in them.
+select * from newCourses nc
+right join newCourses_students ncs on nc.id = ncs.newCourse_id
+right join students s on ncs.student_id = s.id;
+
+-- full outer join
+-- show everything from all tables
+-- select * from newCourses nc
+-- full outer join newCourses_students ncs on nc.id = ncs.newCourse_id
+-- full outer join students s on ncs.student_id = s.id;
