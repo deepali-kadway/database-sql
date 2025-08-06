@@ -161,3 +161,34 @@ select c.id, c.name, s.fullname, s.email
 from students s
 join courses c
 on s.id = c.student_id;
+
+-- Many to many relationship
+-- A student can take many courses, and a course can have many students enrolled in it.
+-- A record on the students table is associated with multiple courses, but a record on the courses table can also be associated with many students.
+create table newCourses(
+id int primary key auto_increment,
+name varchar(100)
+);
+
+insert into newCourses (name)
+values("Maths"), ("Science"), ("History"), ("English"), ("Art");
+
+-- we can use a junction/intermediate/bridge table to represent the many-to-many relationships between 2 tables.
+-- This involves a new table with FK that reference the primary keys of the two tables.
+create table newCourses_students(
+student_id int,
+newCourse_id int,
+foreign key (student_id) references students(id) on delete cascade on update cascade,
+foreign key (newCourse_id) references newCourses(id) on delete cascade on update cascade
+);
+
+insert into newCourses_students (student_id, newCourse_id)
+values (2, 1), (3, 2), (2,3), (3,4), (1,5), (3, 1), (2, 2);
+
+-- Find all new courses taken by a particular student
+select s.id, s.fullname, s.email, nc.name as `course` from students s
+join newCourses_students ncs on s.id = ncs.student_id
+join newCourses nc on ncs.newCourse_id = nc.id
+where s.id = 2;
+
+
