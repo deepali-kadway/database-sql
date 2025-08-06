@@ -92,3 +92,72 @@ where id in (1, 2);
 -- delete students data
 delete from students where id=1;
 
+-- what is a primary key(PK)?
+-- A primary key is a unique identifier for a record in a table. Used to establish relationship between tables.alter
+-- Autoincrements: automatically generate a unique value for the primary key
+
+-- change id column to primary key
+alter table students
+change column id id int primary key auto_increment;
+
+-- insert multiple rows into table without an id
+INSERT into students (fullname, email, password)
+VALUES ("Damon", "damon@gmail.com", "Damon123"),
+("Rue", "rue@gmail.com", "Rue123");
+
+-- what is a foreign key(FK)?
+-- A foreign key is a column in a table which references the primary key of another table. It's used to establish a relationship between tables.
+
+-- what are cascading actions?
+-- They are used to define what happens when a record in a parent table is deleted.
+-- There are different types of cascading actions: RESTRICT, CASCADE, SET NULL and NO ACTION.
+-- RESTRICT: This is the default behaviour. It prevents the deletion or update of a record in the parent table(students) if there are related records in child table(courses)
+-- CASCADE: This will automatically delete or update related records in child table when the parent table deleted or updates the record.
+-- SET NULL: This will set the foreign key column in the child table to NULL when a record in the parent table is deleted.
+-- NO ACTION: This is a similar to RESTRICT. prevents the deletion or update of a record in the parent table if there are related records in the child table.
+
+-- Courses Table
+create table courses(
+id int primary key auto_increment,
+`name` varchar(100),
+student_id int,
+foreign key (student_id) references students(id)
+-- on delete cascade
+-- on update cascade
+);
+
+-- insert data into courses
+insert into courses (name, student_id)
+values("Maths", 2), ("Science", 3), ("History", 5), ("English", 2), ("Art", 5);
+
+-- inserting student_id which does not exists in the students table, we will get error
+insert into courses (name, student_id) values ("Math", 10);
+
+-- ordering by a column in descending or ascending order
+select * from courses order by `name` asc;
+select * from courses order by student_id desc;
+
+-- limiting the number of rows returned
+select * from courses order by `name` asc limit 3;
+
+-- aggregate functions
+-- count and group data based on a column
+select student_id from courses;
+select count(student_id) from courses;
+select student_id, count(*) from courses group by student_id;
+select student_id, GROUP_CONCAT(name) as course_name, count(student_id) as course_count 
+from courses group by student_id; -- show course name enrolled by number of students. Every column in the SELECT clause must either be:Included in the GROUP BY clause, OR An aggregate function (like COUNT, SUM, AVG, etc.
+-- in original query: (select name, count(student_id) from courses group by student_id;), we were selecting name (course name) without including it in GROUP BY and hence SQL didn't know which name to show for each student_id group.
+
+-- Joining tables
+-- There are different ways to join tables: Inner Join, Left join, right join and full join.
+-- Inner Join: This returns rows when there is at least one match in both tables.
+select *
+from students
+join courses
+on students.id = courses.student_id;
+
+select c.id, c.name, s.fullname, s.email
+from students s
+join courses c
+on s.id = c.student_id;
